@@ -8,3 +8,4 @@ window.MANIFEST = [
   "psychology/cognitive-dissonance",
   "psychology/self-concept",
 ];
+
