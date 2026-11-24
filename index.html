@@ -2,41 +2,112 @@
 <html lang="zh">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>概念库</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a0d13">
+<title>概念库 · Concept Library</title>
 <style>
-:root{--bg:#0e1116;--card:#171c24;--line:#262d38;--text:#e6e9ef;--dim:#8b95a5;--accent:#6ea8ff}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:16px/1.7 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
-#app{max-width:680px;margin:0 auto;padding:20px 16px 80px}
-h1{font-size:26px;margin:8px 0 4px}
-h2{font-size:15px;color:var(--dim);font-weight:500;margin:0 0 20px}
-.en{color:var(--dim);font-size:14px;line-height:1.6}
-.grid{display:grid;gap:12px}
-.item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;cursor:pointer}
-.item b{font-size:18px}
-.item small{color:var(--dim);display:block}
-.back{color:var(--accent);cursor:pointer;display:inline-block;margin-bottom:12px;font-size:14px}
+:root{--h:220;--h2:270;--text:#e8ebf2;--dim:#8d97a8;--line:rgba(255,255,255,.09);--card:rgba(255,255,255,.045);--accent:hsl(var(--h),85%,72%);--accent-soft:hsla(var(--h),85%,72%,.14);--serif:"Songti SC","Noto Serif SC","Source Han Serif SC",Georgia,serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#0a0d13}
+body{margin:0;min-height:100vh;color:var(--text);font:16px/1.75 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:radial-gradient(800px 480px at 12% -8%,hsla(var(--h),75%,52%,.22),transparent 62%),radial-gradient(640px 480px at 105% 8%,hsla(var(--h2),70%,55%,.14),transparent 60%),#0a0d13;background-attachment:fixed}
+#bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:calc(env(safe-area-inset-top) + 10px) 14px 10px;background:rgba(10,13,19,.62);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.bar-r{display:flex;gap:8px;align-items:center}
+.brand{font-family:var(--serif);letter-spacing:.14em;font-size:13px;color:var(--dim)}
+.pill{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--text);font-family:inherit;font-size:13px;cursor:pointer;margin:0}
+.pill.on{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.pill.round{width:34px;padding:0;justify-content:center}
+.pill svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#app{max-width:680px;margin:0 auto;padding:22px 18px 100px}
+#app>*{animation:rise .5s calc(var(--i,0)*60ms) ease both}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+h1{font-family:var(--serif);font-size:30px;font-weight:700;letter-spacing:.04em;line-height:1.3;margin:6px 0 2px}
+.subtitle{color:var(--dim);font-size:14px;letter-spacing:.06em;margin:0 0 18px}
+.tag{color:var(--dim);margin:6px 0 24px}
+.lead{color:#cdd3de;margin:14px 0}
+.en{color:var(--dim)}
+.crumb{display:inline-block;color:var(--accent);font-size:14px;cursor:pointer;margin-bottom:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:360px){.grid{grid-template-columns:1fr}}
+.tile{position:relative;overflow:hidden;min-height:116px;padding:18px 16px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(160deg,hsla(var(--c),80%,60%,.24),rgba(255,255,255,.03) 72%);cursor:pointer;transition:transform .18s}
+.tile::after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:hsla(var(--c),90%,65%,.25);filter:blur(18px)}
+.tile:active,.item:active{transform:scale(.97)}
+.tile b{position:relative;display:block;font-family:var(--serif);font-size:21px;letter-spacing:.05em}
+.tile small{position:relative;display:block;margin-top:26px;color:var(--dim);font-size:13px}
+.list{display:grid;gap:12px}
+.item{padding:16px 18px;border-radius:16px;border:1px solid var(--line);background:var(--card);cursor:pointer;transition:transform .18s}
+.item b{font-family:var(--serif);font-size:19px;letter-spacing:.03em}
+.item small{display:block;color:var(--dim);font-size:13px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
-.chip{padding:6px 12px;border-radius:99px;border:1px solid var(--accent);color:var(--accent);font-size:14px;cursor:pointer}
-.chip.on{background:var(--accent);color:var(--bg)}
-.chip.miss{border-color:var(--line);color:var(--dim);cursor:default}
-.sub{border-left:2px solid var(--accent);margin:8px 0 8px 6px;padding:4px 0 4px 12px}
-.stage{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:16px 0}
-button{background:none;border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:10px;font-size:14px;margin:4px 4px 0 0}
-.sec{font-size:13px;color:var(--dim);margin:20px 0 4px;letter-spacing:.08em}
+.chip{padding:6px 13px;border-radius:99px;border:1px solid hsla(var(--h),85%,72%,.5);background:var(--accent-soft);color:var(--accent);font-size:14px;cursor:pointer}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#0a0d13}
+.chip.miss{background:none;border-color:var(--line);color:var(--dim);cursor:default}
+.sub{margin:8px 0 8px 6px;padding:4px 0 4px 14px;border-left:2px solid var(--accent)}
+.sub p{margin:6px 0}
+.stage{position:relative;margin:20px 0;padding:12px;border-radius:20px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));box-shadow:0 10px 40px rgba(0,0,0,.35),inset 0 0 60px hsla(var(--h),80%,60%,.06)}
+.stage button{font-family:inherit;font-size:14px;margin:6px 6px 0 0;padding:8px 14px;border-radius:12px;border:1px solid hsla(var(--h),85%,72%,.4);background:var(--accent-soft);color:var(--accent);cursor:pointer}
+.stage button:active{transform:scale(.96)}
+.sec{margin:24px 0 4px;color:var(--dim);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.notes{margin-top:34px}
+.nhead{display:flex;align-items:center;justify-content:space-between}
+.nhead .sec{margin:0}
+.link{margin-left:14px;color:var(--dim);font-size:13px;cursor:pointer}
+.empty{color:var(--dim);font-size:14px;padding:10px 0}
+.note{margin:10px 0;padding:12px 14px;border-radius:14px;border:1px solid var(--line);border-left:3px solid var(--accent);background:var(--card);white-space:pre-wrap;word-break:break-word;cursor:pointer}
+.note .k{margin-bottom:2px;color:var(--accent);font-size:12px;letter-spacing:.06em}
+.note.ann{border-left-color:#f0b35a}
+.note.ann .k{color:#f0b35a}
+.mask{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.55);animation:fade .2s}
+.sheet{width:100%;max-width:680px;padding:18px 18px calc(env(safe-area-inset-bottom) + 18px);border-top:1px solid var(--line);border-radius:22px 22px 0 0;background:#121723;animation:up .25s ease}
+.sheet .sec{margin:0 0 10px}
+.sheet textarea{width:100%;min-height:140px;margin-top:8px;padding:12px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--text);font-family:inherit;font-size:16px;line-height:1.7;resize:vertical}
+.row{display:flex;gap:10px;margin-top:14px}
+.btn{flex:1;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font-family:inherit;font-size:15px;cursor:pointer}
+.btn.main{border-color:var(--accent);background:var(--accent);color:#0a0d13;font-weight:600}
+.btn.danger{flex:0 0 auto;padding:0 16px;color:#ff8a80}
 </style>
 </head>
 <body>
+<div id="bar"></div>
 <div id="app"></div>
 <script>
 const Concepts = {};
 const addConcept = c => { Concepts[c.id] = c; };
-let stops = [];
-const app = document.getElementById('app');
+let stops = [], curHue = 220;
+const app = document.getElementById('app'), bar = document.getElementById('bar');
+
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+let lang = LS.get('cl_lang', 'zh') === 'en' ? 'en' : 'zh';
+let showNotes = LS.get('cl_shownotes', true) !== false;
+let notes = LS.get('cl_notes', []);
+
+const T = (zh, en) => lang === 'en' ? en : zh;
+const nm = c => lang === 'en' ? (c.en || c.zh) : c.zh;
+const ds = c => lang === 'en' ? (c.enDesc || c.zhDesc) : c.zhDesc;
+const subj = k => (window.SUBJECTS || {})[k] || {};
+const subName = k => {
+  const s = subj(k);
+  if (typeof s === 'string') return s;
+  return (lang === 'en' ? s.en : s.zh) || s.zh || s.en || k;
+};
+const hueOf = k => subj(k).hue || 220;
+const setHue = h => {
+  curHue = h;
+  const st = document.documentElement.style;
+  st.setProperty('--h', h);
+  st.setProperty('--h2', (h + 50) % 360);
+};
 
 const api = {
-  color: {bg:'#171c24', text:'#e6e9ef', dim:'#8b95a5', accent:'#6ea8ff', warm:'#ff7a59'},
+  get lang() { return lang; },
+  t: o => typeof o === 'string' ? o : (o[lang] || o.zh || o.en || ''),
+  get color() {
+    return {bg: '#12161f', text: '#e8ebf2', dim: '#8d97a8', accent: 'hsl(' + curHue + ',85%,72%)', warm: '#ff7a59'};
+  },
   canvas(host, h = 240) {
     const cv = document.createElement('canvas');
     const w = host.clientWidth - 24 || 300, r = devicePixelRatio || 1;
@@ -61,32 +132,168 @@ const mk = (tag, cls, html) => {
   return e;
 };
 const go = h => { location.hash = h; };
-const back = (to, t) => { const b = mk('div', 'back', t); b.onclick = () => go(to); return b; };
-const subName = k => (window.SUBJECTS || {})[k] || k;
+const I = {
+  home: '<svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 9.5V20h5v-6h4v6h5V9.5"/></svg>',
+  plus: '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>'
+};
+
+function buildBar(isHome, scope) {
+  bar.innerHTML = '';
+  const l = mk('div');
+  if (isHome) l.append(mk('span', 'brand', 'CONCEPT LIBRARY'));
+  else {
+    const b = mk('button', 'pill', I.home + '<span>' + T('首页', 'Home') + '</span>');
+    b.onclick = () => go('#/');
+    l.append(b);
+  }
+  const r = mk('div', 'bar-r');
+  const lb = mk('button', 'pill', lang === 'en' ? '中文' : 'EN');
+  lb.onclick = () => { lang = lang === 'en' ? 'zh' : 'en'; LS.set('cl_lang', lang); route(true); };
+  const nb = mk('button', 'pill' + (showNotes ? ' on' : ''), T('笔记', 'Notes'));
+  nb.onclick = () => { showNotes = !showNotes; LS.set('cl_shownotes', showNotes); route(true); };
+  const pb = mk('button', 'pill round', I.plus);
+  pb.setAttribute('aria-label', T('添加笔记', 'Add note'));
+  pb.onclick = () => editNote(null, scope);
+  r.append(lb, nb, pb);
+  bar.append(l, r);
+}
+
+function scopeLabel(scope) {
+  if (scope.startsWith('c:')) { const c = Concepts[scope.slice(2)]; return c ? nm(c) : scope.slice(2); }
+  if (scope.startsWith('s:')) return subName(scope.slice(2));
+  return T('首页', 'Home');
+}
+
+function editNote(n, scope) {
+  const mask = mk('div', 'mask'), sh = mk('div', 'sheet');
+  mask.append(sh);
+  const close = () => mask.remove();
+  mask.onclick = e => { if (e.target === mask) close(); };
+  sh.append(mk('div', 'sec', T('笔记位置：', 'Note on: ') + scopeLabel(scope)));
+  let kind = n ? n.kind : 'idea';
+  const chips = [['idea', T('想法', 'Thought')], ['ann', T('注释', 'Annotation')]].map(([k, t]) => {
+    const ch = mk('span', 'chip' + (k === kind ? ' on' : ''), t);
+    ch.onclick = () => { kind = k; chips.forEach(x => x.classList.remove('on')); ch.classList.add('on'); };
+    return ch;
+  });
+  const kr = mk('div', 'chips');
+  kr.append(...chips);
+  const ta = mk('textarea');
+  ta.value = n ? n.text : '';
+  ta.placeholder = T('写下你的想法或注释…', 'Write a thought or annotation…');
+  const row = mk('div', 'row');
+  const cancel = mk('button', 'btn', T('取消', 'Cancel'));
+  cancel.onclick = close;
+  const save = mk('button', 'btn main', T('保存', 'Save'));
+  save.onclick = () => {
+    const text = ta.value.trim();
+    if (!text) { close(); return; }
+    if (n) { n.text = text; n.kind = kind; }
+    else notes.push({id: 'n' + Date.now() + Math.random().toString(36).slice(2, 6), scope, kind, text, time: Date.now()});
+    LS.set('cl_notes', notes);
+    if (!showNotes) { showNotes = true; LS.set('cl_shownotes', true); }
+    close(); route(true);
+  };
+  if (n) {
+    const del = mk('button', 'btn danger', T('删除', 'Delete'));
+    del.onclick = () => {
+      if (!confirm(T('删除这条笔记？', 'Delete this note?'))) return;
+      notes = notes.filter(x => x.id !== n.id);
+      LS.set('cl_notes', notes);
+      close(); route(true);
+    };
+    row.append(del);
+  }
+  row.append(cancel, save);
+  sh.append(kr, ta, row);
+  document.body.append(mask);
+  if (!n) setTimeout(() => ta.focus(), 60);
+}
+
+function exportNotes() {
+  const s = JSON.stringify(notes);
+  const manual = () => prompt(T('请手动复制：', 'Copy manually:'), s);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(s).then(
+      () => alert(T('已复制到剪贴板。在另一台设备上点“导入”粘贴即可。', 'Copied to clipboard. On another device, tap Import and paste.')),
+      manual);
+  } else manual();
+}
+
+function importNotes() {
+  const s = prompt(T('粘贴导出的笔记内容：', 'Paste exported notes:'));
+  if (!s) return;
+  try {
+    const arr = JSON.parse(s);
+    if (!Array.isArray(arr)) throw 0;
+    const have = new Set(notes.map(n => n.id));
+    let add = 0;
+    arr.forEach(n => {
+      if (n && n.id && n.text && !have.has(n.id)) {
+        notes.push({id: String(n.id), scope: String(n.scope || 'home'), kind: n.kind === 'ann' ? 'ann' : 'idea', text: String(n.text), time: Number(n.time) || Date.now()});
+        add++;
+      }
+    });
+    LS.set('cl_notes', notes);
+    alert(T('已导入 ' + add + ' 条', 'Imported ' + add + ' note(s)'));
+    route(true);
+  } catch (e) { alert(T('格式不对，没有导入。', 'Invalid format. Nothing imported.')); }
+}
+
+function notesSection(scope) {
+  if (!showNotes) return;
+  const list = notes.filter(n => n.scope === scope).sort((a, b) => a.time - b.time);
+  const box = mk('div', 'notes');
+  const head = mk('div', 'nhead');
+  head.append(mk('div', 'sec', T('笔记', 'Notes') + (list.length ? ' · ' + list.length : '')));
+  const tools = mk('div');
+  const ex = mk('span', 'link', T('导出', 'Export')); ex.onclick = exportNotes;
+  const im = mk('span', 'link', T('导入', 'Import')); im.onclick = importNotes;
+  tools.append(ex, im);
+  head.append(tools);
+  box.append(head);
+  if (!list.length) box.append(mk('div', 'empty', T('点右上角 + 添加想法或注释', 'Tap + at the top right to add a thought or annotation')));
+  list.forEach(n => {
+    const el = mk('div', 'note' + (n.kind === 'ann' ? ' ann' : ''));
+    el.append(mk('div', 'k', n.kind === 'ann' ? T('注释', 'Annotation') : T('想法', 'Thought')));
+    const tx = mk('div');
+    tx.textContent = n.text;
+    el.append(tx);
+    el.onclick = () => editNote(n, scope);
+    box.append(el);
+  });
+  app.append(box);
+}
 
 function home() {
-  app.append(mk('h1', 0, '概念库'), mk('h2', 0, 'Concept Library'));
+  app.append(mk('h1', 0, T('概念库', 'Concept Library')));
+  app.append(mk('p', 'tag', T('把知识变成能看见、能触碰的东西。', 'Turn knowledge into something you can see and touch.')));
   const used = Object.values(Concepts).map(c => c.subject);
   const keys = [...new Set([...Object.keys(window.SUBJECTS || {}), ...used])];
   const g = mk('div', 'grid');
   keys.forEach(k => {
     const n = used.filter(s => s === k).length;
-    const it = mk('div', 'item', `<b>${subName(k)}</b><small>${n} 个概念</small>`);
+    const it = mk('div', 'tile', '<b>' + subName(k) + '</b><small>' + n + ' ' + T('个概念', n === 1 ? 'concept' : 'concepts') + '</small>');
+    it.style.setProperty('--c', hueOf(k));
     it.onclick = () => go('#/s/' + k);
     g.append(it);
   });
   app.append(g);
+  notesSection('home');
 }
 
 function subjectView(k) {
-  app.append(back('#/', '← 返回'), mk('h1', 0, subName(k)));
-  const g = mk('div', 'grid');
-  Object.values(Concepts).filter(c => c.subject === k).forEach(c => {
-    const it = mk('div', 'item', `<b>${c.zh}</b><small>${c.en}</small>`);
+  app.append(mk('h1', 0, subName(k)));
+  const list = mk('div', 'list');
+  const cs = Object.values(Concepts).filter(c => c.subject === k);
+  cs.forEach(c => {
+    const it = mk('div', 'item', '<b>' + nm(c) + '</b>' + (lang === 'zh' && c.en ? '<small>' + c.en + '</small>' : ''));
     it.onclick = () => go('#/c/' + c.id);
-    g.append(it);
+    list.append(it);
   });
-  app.append(g);
+  if (!cs.length) list.append(mk('div', 'empty', T('这个学科还没有概念', 'No concepts here yet')));
+  app.append(list);
+  notesSection('s:' + k);
 }
 
 function parts(c, host, seen) {
@@ -94,13 +301,13 @@ function parts(c, host, seen) {
   host.append(w, box);
   c.parts.forEach(pid => {
     const p = Concepts[pid];
-    if (!p) { w.append(mk('span', 'chip miss', pid + '（未收录）')); return; }
-    const ch = mk('span', 'chip', p.zh);
+    if (!p) { w.append(mk('span', 'chip miss', pid + T('（未收录）', ' (not added yet)'))); return; }
+    const ch = mk('span', 'chip', nm(p));
     w.append(ch);
     ch.onclick = () => {
       if (ch.classList.toggle('on')) {
-        const s = mk('div', 'sub', `<b>${p.zh}</b> <span class="en">${p.en}</span><p>${p.zhDesc}</p><p class="en">${p.enDesc}</p>`);
-        const open = mk('span', 'chip', '打开完整页面 →');
+        const s = mk('div', 'sub', '<b>' + nm(p) + '</b>' + (lang === 'zh' && p.en ? ' <span class="en">' + p.en + '</span>' : '') + '<p>' + ds(p) + '</p>');
+        const open = mk('span', 'chip', T('打开完整页面 →', 'Open full page →'));
         open.onclick = () => go('#/c/' + p.id);
         s.append(open);
         if (p.parts && p.parts.length && !seen.includes(pid)) parts(p, s, [...seen, pid]);
@@ -112,36 +319,47 @@ function parts(c, host, seen) {
 
 function conceptView(id) {
   const c = Concepts[id];
-  if (!c) { app.append(back('#/', '← 返回'), mk('p', 0, '没找到这个概念')); return; }
-  app.append(back('#/s/' + c.subject, '← ' + subName(c.subject)));
-  app.append(mk('h1', 0, c.zh), mk('h2', 0, c.en));
-  app.append(mk('p', 0, c.zhDesc), mk('p', 'en', c.enDesc));
+  if (!c) { app.append(mk('p', 0, T('没找到这个概念', 'Concept not found'))); return; }
+  const cr = mk('span', 'crumb', '← ' + subName(c.subject));
+  cr.onclick = () => go('#/s/' + c.subject);
+  app.append(cr, mk('h1', 0, nm(c)));
+  if (lang === 'zh' && c.en) app.append(mk('div', 'subtitle', c.en));
+  app.append(mk('p', 'lead', ds(c)));
   if (c.render) {
     const st = mk('div', 'stage');
     app.append(st);
-    try { c.render(st, api); } catch (e) { st.textContent = '动画出错：' + e.message; }
+    try { c.render(st, api); } catch (e) { st.textContent = T('动画出错：', 'Animation error: ') + e.message; }
   }
   if (c.parts && c.parts.length) {
-    app.append(mk('div', 'sec', '包含的概念'));
+    app.append(mk('div', 'sec', T('包含的概念', 'Includes')));
     parts(c, app, [c.id]);
   }
   const refs = Object.values(Concepts).filter(x => (x.parts || []).includes(id));
   if (refs.length) {
-    app.append(mk('div', 'sec', '被这些概念引用'));
+    app.append(mk('div', 'sec', T('被这些概念引用', 'Referenced by')));
     const w = mk('div', 'chips');
-    refs.forEach(r => { const ch = mk('span', 'chip', r.zh); ch.onclick = () => go('#/c/' + r.id); w.append(ch); });
+    refs.forEach(r => { const ch = mk('span', 'chip', nm(r)); ch.onclick = () => go('#/c/' + r.id); w.append(ch); });
     app.append(w);
   }
+  notesSection('c:' + id);
 }
 
-function route() {
+function route(keep) {
+  const y = keep === true ? scrollY : 0;
   stops.forEach(f => f()); stops = [];
   const [, type, id] = (location.hash || '#/').split('/');
   app.innerHTML = '';
-  if (type === 's') subjectView(id);
-  else if (type === 'c') conceptView(id);
-  else home();
-  scrollTo(0, 0);
+  document.documentElement.lang = lang;
+  document.title = T('概念库', 'Concept Library');
+  if (type === 's') { setHue(hueOf(id)); buildBar(false, 's:' + id); subjectView(id); }
+  else if (type === 'c') {
+    const c = Concepts[id];
+    setHue(c ? hueOf(c.subject) : 220);
+    buildBar(false, c ? 'c:' + id : 'home');
+    conceptView(id);
+  } else { setHue(220); buildBar(true, 'home'); home(); }
+  [...app.children].forEach((e, i) => e.style.setProperty('--i', Math.min(i, 8)));
+  scrollTo(0, y);
 }
 addEventListener('hashchange', route);
 
@@ -153,7 +371,7 @@ const load = src => new Promise(r => {
 });
 load('manifest.js')
   .then(() => Promise.all((window.MANIFEST || []).map(p => load('concepts/' + p + '.js'))))
-  .then(route);
+  .then(() => route());
 </script>
 </body>
 </html>
