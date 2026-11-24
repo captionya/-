@@ -8,17 +8,27 @@ addConcept({
   parts: ['self-concept'],
   render(el, api) {
     const {ctx, w: W, h: H} = api.canvas(el, 220);
-    let ax = W * 0.2, bx = W * 0.8, mid = 0, mode = '';
-    const btn = (t, fn) => { const b = document.createElement('button'); b.textContent = t; b.onclick = fn; el.appendChild(b); };
-    btn('制造冲突', () => { ax = W * 0.2; bx = W * 0.8; mid = 0; mode = ''; });
-    btn('改变行为', () => mode = 'behavior');
-    btn('改变想法', () => mode = 'belief');
-    btn('找个借口', () => mode = 'excuse');
+    const L = {
+      a: {zh: '我很自律', en: 'I am disciplined'},
+      b: {zh: '我又熬夜了', en: 'I stayed up late'},
+      ex: {zh: '就这一次', en: 'Just this once'},
+      ds: {zh: '不适感', en: 'Discomfort'}
+    };
+    let ax = W * 0.22, bx = W * 0.78, mid = 0, mode = '';
+    const btn = (t, fn) => { const b = document.createElement('button'); b.textContent = api.t(t); b.onclick = fn; el.appendChild(b); };
+    btn({zh: '制造冲突', en: 'Create conflict'}, () => { ax = W * 0.22; bx = W * 0.78; mid = 0; mode = ''; });
+    btn({zh: '改变行为', en: 'Change behavior'}, () => mode = 'behavior');
+    btn({zh: '改变想法', en: 'Change belief'}, () => mode = 'belief');
+    btn({zh: '找个借口', en: 'Add a justification'}, () => mode = 'excuse');
+    const text = (s, x, y) => {
+      const m = ctx.measureText(s).width / 2;
+      ctx.fillText(s, Math.max(m + 4, Math.min(W - m - 4, x)), y);
+    };
     api.loop(t => {
       if (mode === 'behavior') bx += (ax + 40 - bx) * 0.03;
       if (mode === 'belief') ax += (bx - 40 - ax) * 0.03;
       if (mode === 'excuse') mid += (1 - mid) * 0.04;
-      const tension = Math.min(1, (bx - ax) / (W * 0.6)) * (1 - 0.7 * mid);
+      const tension = Math.min(1, (bx - ax) / (W * 0.56)) * (1 - 0.7 * mid);
       const col = `rgb(${Math.round(110 + 145 * tension)},${Math.round(168 - 46 * tension)},${Math.round(255 - 166 * tension)})`;
       ctx.clearRect(0, 0, W, H);
       ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.beginPath();
@@ -34,11 +44,11 @@ addConcept({
         ctx.beginPath(); ctx.arc((ax + bx) / 2, H / 2, 14 * mid, 0, 7); ctx.fill();
       }
       ctx.fillStyle = api.color.text; ctx.font = '13px sans-serif'; ctx.textAlign = 'center';
-      ctx.fillText('我很自律', ax, H / 2 - 38);
-      ctx.fillText('我又熬夜了', bx, H / 2 + 52);
-      if (mid > 0.5) ctx.fillText('就这一次', (ax + bx) / 2, H / 2 - 38);
+      text(api.t(L.a), ax, H / 2 - 38);
+      text(api.t(L.b), bx, H / 2 + 52);
+      if (mid > 0.5) text(api.t(L.ex), (ax + bx) / 2, H / 2 - 38);
       ctx.fillStyle = api.color.dim;
-      ctx.fillText('不适感 ' + Math.round(tension * 100) + '%', W / 2, H - 10);
+      text(api.t(L.ds) + ' ' + Math.round(tension * 100) + '%', W / 2, H - 10);
     });
   }
 });
