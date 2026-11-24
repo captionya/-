@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>概念库</title>
+<style>
+:root{--bg:#0e1116;--card:#171c24;--line:#262d38;--text:#e6e9ef;--dim:#8b95a5;--accent:#6ea8ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.7 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+#app{max-width:680px;margin:0 auto;padding:20px 16px 80px}
+h1{font-size:26px;margin:8px 0 4px}
+h2{font-size:15px;color:var(--dim);font-weight:500;margin:0 0 20px}
+.en{color:var(--dim);font-size:14px;line-height:1.6}
+.grid{display:grid;gap:12px}
+.item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;cursor:pointer}
+.item b{font-size:18px}
+.item small{color:var(--dim);display:block}
+.back{color:var(--accent);cursor:pointer;display:inline-block;margin-bottom:12px;font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{padding:6px 12px;border-radius:99px;border:1px solid var(--accent);color:var(--accent);font-size:14px;cursor:pointer}
+.chip.on{background:var(--accent);color:var(--bg)}
+.chip.miss{border-color:var(--line);color:var(--dim);cursor:default}
+.sub{border-left:2px solid var(--accent);margin:8px 0 8px 6px;padding:4px 0 4px 12px}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:16px 0}
+button{background:none;border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:10px;font-size:14px;margin:4px 4px 0 0}
+.sec{font-size:13px;color:var(--dim);margin:20px 0 4px;letter-spacing:.08em}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const Concepts = {};
+const addConcept = c => { Concepts[c.id] = c; };
+let stops = [];
+const app = document.getElementById('app');
+
+const api = {
+  color: {bg:'#171c24', text:'#e6e9ef', dim:'#8b95a5', accent:'#6ea8ff', warm:'#ff7a59'},
+  canvas(host, h = 240) {
+    const cv = document.createElement('canvas');
+    const w = host.clientWidth - 24 || 300, r = devicePixelRatio || 1;
+    cv.style.cssText = 'width:100%;height:' + h + 'px;display:block';
+    cv.width = w * r; cv.height = h * r;
+    host.appendChild(cv);
+    const ctx = cv.getContext('2d'); ctx.scale(r, r);
+    return {cv, ctx, w, h};
+  },
+  loop(fn) {
+    let on = true; const t0 = performance.now();
+    const f = t => { if (!on) return; fn((t - t0) / 1000); requestAnimationFrame(f); };
+    requestAnimationFrame(f);
+    stops.push(() => on = false);
+  }
+};
+
+const mk = (tag, cls, html) => {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (html != null) e.innerHTML = html;
+  return e;
+};
+const go = h => { location.hash = h; };
+const back = (to, t) => { const b = mk('div', 'back', t); b.onclick = () => go(to); return b; };
+const subName = k => (window.SUBJECTS || {})[k] || k;
+
+function home() {
+  app.append(mk('h1', 0, '概念库'), mk('h2', 0, 'Concept Library'));
+  const used = Object.values(Concepts).map(c => c.subject);
+  const keys = [...new Set([...Object.keys(window.SUBJECTS || {}), ...used])];
+  const g = mk('div', 'grid');
+  keys.forEach(k => {
+    const n = used.filter(s => s === k).length;
+    const it = mk('div', 'item', `<b>${subName(k)}</b><small>${n} 个概念</small>`);
+    it.onclick = () => go('#/s/' + k);
+    g.append(it);
+  });
+  app.append(g);
+}
+
+function subjectView(k) {
+  app.append(back('#/', '← 返回'), mk('h1', 0, subName(k)));
+  const g = mk('div', 'grid');
+  Object.values(Concepts).filter(c => c.subject === k).forEach(c => {
+    const it = mk('div', 'item', `<b>${c.zh}</b><small>${c.en}</small>`);
+    it.onclick = () => go('#/c/' + c.id);
+    g.append(it);
+  });
+  app.append(g);
+}
+
+function parts(c, host, seen) {
+  const w = mk('div', 'chips'), box = mk('div');
+  host.append(w, box);
+  c.parts.forEach(pid => {
+    const p = Concepts[pid];
+    if (!p) { w.append(mk('span', 'chip miss', pid + '（未收录）')); return; }
+    const ch = mk('span', 'chip', p.zh);
+    w.append(ch);
+    ch.onclick = () => {
+      if (ch.classList.toggle('on')) {
+        const s = mk('div', 'sub', `<b>${p.zh}</b> <span class="en">${p.en}</span><p>${p.zhDesc}</p><p class="en">${p.enDesc}</p>`);
+        const open = mk('span', 'chip', '打开完整页面 →');
+        open.onclick = () => go('#/c/' + p.id);
+        s.append(open);
+        if (p.parts && p.parts.length && !seen.includes(pid)) parts(p, s, [...seen, pid]);
+        box.append(s); ch._s = s;
+      } else ch._s.remove();
+    };
+  });
+}
+
+function conceptView(id) {
+  const c = Concepts[id];
+  if (!c) { app.append(back('#/', '← 返回'), mk('p', 0, '没找到这个概念')); return; }
+  app.append(back('#/s/' + c.subject, '← ' + subName(c.subject)));
+  app.append(mk('h1', 0, c.zh), mk('h2', 0, c.en));
+  app.append(mk('p', 0, c.zhDesc), mk('p', 'en', c.enDesc));
+  if (c.render) {
+    const st = mk('div', 'stage');
+    app.append(st);
+    try { c.render(st, api); } catch (e) { st.textContent = '动画出错：' + e.message; }
+  }
+  if (c.parts && c.parts.length) {
+    app.append(mk('div', 'sec', '包含的概念'));
+    parts(c, app, [c.id]);
+  }
+  const refs = Object.values(Concepts).filter(x => (x.parts || []).includes(id));
+  if (refs.length) {
+    app.append(mk('div', 'sec', '被这些概念引用'));
+    const w = mk('div', 'chips');
+    refs.forEach(r => { const ch = mk('span', 'chip', r.zh); ch.onclick = () => go('#/c/' + r.id); w.append(ch); });
+    app.append(w);
+  }
+}
+
+function route() {
+  stops.forEach(f => f()); stops = [];
+  const [, type, id] = (location.hash || '#/').split('/');
+  app.innerHTML = '';
+  if (type === 's') subjectView(id);
+  else if (type === 'c') conceptView(id);
+  else home();
+  scrollTo(0, 0);
+}
+addEventListener('hashchange', route);
+
+const load = src => new Promise(r => {
+  const s = document.createElement('script');
+  s.src = src + '?v=' + Date.now();
+  s.onload = s.onerror = r;
+  document.head.append(s);
+});
+load('manifest.js')
+  .then(() => Promise.all((window.MANIFEST || []).map(p => load('concepts/' + p + '.js'))))
+  .then(route);
+</script>
+</body>
+</html>
